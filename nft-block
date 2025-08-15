@@ -104,11 +104,11 @@ nft_prepare()
 	fi
 
 	# Create IPv4/IPv6 address sets for storing blocked IPs
-	if ! nft add set inet "${NFT_TABLE_NAME}" 'blacklist_v4' '{ type ipv4_addr ; flags interval ; }'; then
+	if ! nft add set inet "${NFT_TABLE_NAME}" 'blacklist_v4' '{ type ipv4_addr ; flags interval ; auto-merge; }'; then
 		loge 'Failed to create IPv4 blacklist set'
 		return 1
 	fi
-	if ! nft add set inet "${NFT_TABLE_NAME}" 'blacklist_v6' '{ type ipv6_addr ; flags interval ; }'; then
+	if ! nft add set inet "${NFT_TABLE_NAME}" 'blacklist_v6' '{ type ipv6_addr ; flags interval ; auto-merge; }'; then
 		loge 'Failed to create IPv6 blacklist set'
 		return 1
 	fi
