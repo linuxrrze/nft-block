@@ -53,18 +53,20 @@ load_ip_list()
 
 	# Download list
 	local list
-	if ! list=$(curl "${CURL_OPTS[@]}" "${url}"); then
+	if [[ "${url}" =~ ^https?://.*$ ]]; then
+		if ! list=$(curl "${CURL_OPTS[@]}" "${url}" | grep -o -e '^[0-9A-Fa-f\.\:/]\+'); then
+			return 1
+		fi
+	elif [ -f "${url}" ]; then
+		list=$(cat "${url}" | grep -o -e '^[0-9A-Fa-f\.\:/]\+')
+	else
+		echo "Unknown data source: ${url}"
 		return 1
 	fi
 
 	# Add IPs to array
 	local entry
 	for entry in ${list}; do
-		# Ignore lines starting with #
-		if [[ "${entry:0:1}" == '#' ]]; then
-			continue
-		fi
-
 		get_ip_ver "${entry}"
 		local ip_ver=$?
 
